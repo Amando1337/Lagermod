@@ -17,3 +17,6 @@ pluginManagement {
 plugins {
     id("net.labymod.labygradle.settings")
 }
+
+include(":api")
+include(":core")

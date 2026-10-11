@@ -32,7 +32,7 @@ public class LagerMod extends LabyAddon<LagerConfig> {
     // Hotkey: bei JEDEM Tastendruck UI öffnen/schließen (TOGGLE-State ignorieren,
     // sonst braucht man nach Escape zwei Drücke, weil der interne State noch "an" ist)
     Laby.references().hotkeyService().register(
-        "lagermod-open",
+        "kistenlagermod-open",
         () -> this.configuration().enabled().get(),
         () -> this.configuration().openKey().get(),
         () -> HotkeyService.Type.TOGGLE,

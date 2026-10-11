@@ -1,1 +1,24 @@
-
+{
+  "schemaVersion": 1,
+  "id": "lagermod",
+  "version": "1.0.0",
+  "name": "LagerMod",
+  "description": "Mod für LabyMod und Fabric zur Lagerverwaltung auf OpSucht",
+  "authors": [
+    "Amando"
+  ],
+  "contact": {},
+  "license": "All Rights Reserved",
+  "icon": "assets/lagermod/textures/icon.png",
+  "environment": "client",
+  "entrypoints": {},
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "modmenu.clientOnly": true
+    }
+  }
+}

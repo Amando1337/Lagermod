@@ -26,11 +26,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build release jar
-        run: ./gradlew createReleaseJar
+      - name: Build jar
+        run: ./gradlew build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-jar
-          path: build/libs/*-release.jar
+          path: build/libs/*.jar

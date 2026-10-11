@@ -22,7 +22,7 @@ labyMod {
     }
 
     addonInfo {
-        namespace = "lagermod"
+        namespace = "kistenlagermod"
         displayName = "LagerMod"
         author = "Amando"
         description = "Mod für LabyMod und Fabric zur Lagerverwaltung auf OpSucht"
@@ -44,7 +44,7 @@ subprojects {
     }
 }
 
-val iconInJar = "assets/lagermod/textures/icon.png"
+val iconInJar = "assets/kistenlagermod/textures/icon.png"
 
 tasks.register<Copy>("copyReleaseJar") {
     dependsOn(":core:build")

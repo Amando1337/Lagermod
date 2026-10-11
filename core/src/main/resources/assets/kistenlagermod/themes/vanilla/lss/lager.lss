@@ -1,1 +1,316 @@
+/* Fullscreen-Layout — Formular mit Item/Menge/Reihe/Kiste, Liste mit Lagerplatz */
 
+.lager-root {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: rgba(12, 14, 18, 0.97);
+    padding: 14 18 10 18;
+    space-between-entries: 8;
+}
+
+/* ===== Header ===== */
+.lager-header {
+    width: 100%;
+    height: 34;
+    layout: spread;
+    space-between-entries: 10;
+}
+
+.lager-header-text {
+    width: fit-content;
+    height: 34;
+    space-between-entries: 1;
+}
+
+.lager-title {
+    width: 100%;
+    height: 16;
+    text-color: #f5f7fa;
+    font-size: 1.35;
+    shadow: false;
+}
+
+.lager-subtitle {
+    width: 100%;
+    height: 12;
+    text-color: #8b93a1;
+    font-size: 0.85;
+    shadow: false;
+}
+
+.lager-header-actions {
+    width: fit-content;
+    height: 22;
+    layout: stack;
+    space-between-entries: 8;
+}
+
+.lager-search {
+    width: 120;
+    height: 18;
+    box-sizing: border-box;
+    background-color: rgba(8, 10, 14, 0.9);
+    border-radius: 4;
+    padding: 0 8;
+    text-color: #eef2f7;
+    place-holder-color: #6a7382;
+    cursor-color: #f0a04b;
+    text-alignment-y: center;
+    font-size: 0.8;
+}
+
+.lager-badge {
+    width: 58;
+    height: 18;
+    background-color: rgba(240, 160, 75, 0.15);
+    border-radius: 3;
+}
+
+.lager-badge-text {
+    left: 50%;
+    top: 50%;
+    alignment-x: center;
+    alignment-y: center;
+    width: fit-content;
+    height: fit-content;
+    text-color: #f0a04b;
+    font-size: 0.8;
+    shadow: false;
+}
+
+.lager-header-line {
+    width: 100%;
+    height: 2;
+    background-color: #00A6EF;
+}
+
+/* ===== Formular ===== */
+.lager-form {
+    width: 100%;
+    height: 146;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 6;
+    padding-top: 8;
+    padding-right: 14;
+    padding-bottom: 8;
+    padding-left: 14;
+    space-between-entries: 6;
+}
+
+.lager-form-title {
+    width: fit-content;
+    height: 12;
+    left: 50%;
+    alignment-x: center;
+    text-color: #dce1ea;
+    font-size: 0.9;
+    shadow: false;
+}
+
+.lager-form-row {
+    width: 100%;
+    height: 22;
+    layout: fill;
+    space-between-entries: 10;
+}
+
+.lager-form-col {
+    height: 22;
+}
+
+.lager-form-row-position {
+    width: 100%;
+    height: 22;
+    layout: stack;
+    alignment-x: center;
+}
+
+.lager-btn-position {
+    width: 180;
+    height: 22;
+    box-sizing: border-box;
+    background-color: rgba(8, 10, 14, 0.9);
+    border-radius: 4;
+    padding: 0 10;
+    text-color: #eef2f7;
+    text-alignment-x: center;
+    text-alignment-y: center;
+    font-size: 0.9;
+}
+
+.lager-btn-position:hover {
+    background-color: rgba(18, 20, 26, 0.95);
+}
+
+.lager-form-row-actions {
+    width: 100%;
+    height: 22;
+    layout: fill;
+    space-between-entries: 10;
+}
+
+.lager-section-title {
+    width: 100%;
+    height: 12;
+    text-color: #dce1ea;
+    font-size: 0.9;
+    shadow: false;
+}
+
+.lager-field-item,
+.lager-field-amount,
+.lager-field-row,
+.lager-field-chest {
+    width: 100%;
+    height: 22;
+    box-sizing: border-box;
+    background-color: rgba(8, 10, 14, 0.9);
+    border-radius: 4;
+    padding: 0 8;
+    text-color: #eef2f7;
+    place-holder-color: #6a7382;
+    cursor-color: #f0a04b;
+    text-alignment-y: center;
+    font-size: 0.9;
+}
+
+.lager-field-amount {
+    text-alignment-x: center;
+}
+
+.lager-btn-add {
+    width: 100%;
+    height: 22;
+    box-sizing: border-box;
+    background-color: #1f9a66;
+    border-radius: 4;
+    text-color: #ffffff;
+    font-size: 0.85;
+}
+
+.lager-btn-remove {
+    width: 100%;
+    height: 22;
+    box-sizing: border-box;
+    background-color: #c9444c;
+    border-radius: 4;
+    text-color: #ffffff;
+    font-size: 0.85;
+}
+
+/* ===== Bestand ===== */
+.lager-scroll {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 6;
+    padding: 6;
+    enable-scroll-content: true;
+    child-align: top;
+    stencil: true;
+}
+
+.lager-scroll-empty {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 6;
+    padding: 6;
+    enable-scroll-content: true;
+    child-align: center;
+    stencil: true;
+}
+
+.lager-list {
+    width: 100%;
+    height: fit-content;
+    space-between-entries: 6;
+    list-alignment: top;
+}
+
+.lager-grid-row {
+    width: 100%;
+    height: 36;
+    layout: fill;
+    space-between-entries: 6;
+}
+
+.lager-empty-panel {
+    width: 100%;
+    height: 80;
+}
+
+.lager-empty {
+    left: 50%;
+    top: 50%;
+    alignment-x: center;
+    alignment-y: center;
+    width: fit-content;
+    height: fit-content;
+    text-color: #6b7483;
+    font-size: 0.9;
+    shadow: false;
+}
+
+.lager-item-row {
+    height: 36;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: 3;
+}
+
+.lager-item-spacer {
+    height: 36;
+}
+
+.lager-item-icon {
+    left: 6;
+    top: 50%;
+    alignment-y: center;
+    width: 24;
+    height: 24;
+}
+
+.lager-item-name {
+    left: 36;
+    top: 8;
+    width: fit-content;
+    height: fit-content;
+    text-color: #e8edf4;
+    font-size: 0.9;
+    shadow: false;
+}
+
+.lager-item-location {
+    left: 36;
+    bottom: 6;
+    width: fit-content;
+    height: fit-content;
+    text-color: #8b93a1;
+    font-size: 0.75;
+    shadow: false;
+}
+
+.lager-item-amount {
+    right: 8;
+    top: 50%;
+    alignment-x: right;
+    alignment-y: center;
+    width: fit-content;
+    height: fit-content;
+    text-color: #f0a04b;
+    font-size: 0.9;
+    shadow: false;
+}
+
+.lager-footer {
+    width: 100%;
+    height: 14;
+    text-color: #6b7483;
+    font-size: 0.75;
+    shadow: false;
+}

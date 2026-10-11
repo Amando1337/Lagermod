@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "lagermod",
+  "id": "kistenlagermod",
   "version": "1.0.0",
   "name": "LagerMod",
   "description": "Mod für LabyMod und Fabric zur Lagerverwaltung auf OpSucht",
@@ -9,7 +9,7 @@
   ],
   "contact": {},
   "license": "All Rights Reserved",
-  "icon": "assets/lagermod/textures/icon.png",
+  "icon": "assets/kistenlagermod/textures/icon.png",
   "environment": "client",
   "entrypoints": {},
   "depends": {

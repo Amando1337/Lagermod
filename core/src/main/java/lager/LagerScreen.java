@@ -63,28 +63,27 @@ public class LagerScreen extends SimpleActivity {
     root.addId("lager-root");
 
     this.itemInput = new TextFieldWidget();
-    this.itemInput.placeholder(Component.text("Itemname"));
+    this.itemInput.placeholder(Component.translatable("lagermod.placeholder.item"));
     this.itemInput.addId("lager-field-item");
 
     this.amountInput = new TextFieldWidget();
-    this.amountInput.placeholder(Component.text("Menge"));
+    this.amountInput.placeholder(Component.translatable("lagermod.placeholder.amount"));
     this.amountInput.addId("lager-field-amount");
 
     this.rowInput = new TextFieldWidget();
-    this.rowInput.placeholder(Component.text("Reihe (z.B. F oder 3)"));
+    this.rowInput.placeholder(Component.translatable("lagermod.placeholder.row"));
     this.rowInput.addId("lager-field-row");
 
     this.chestInput = new TextFieldWidget();
-    this.chestInput.placeholder(Component.text("Kiste (z.B. 8)"));
+    this.chestInput.placeholder(Component.translatable("lagermod.placeholder.chest"));
     this.chestInput.addId("lager-field-chest");
 
-    this.positionDropdownButton = ButtonWidget.text(
-        this.getPositionButtonText(),
+    this.positionDropdownButton = ButtonWidget.component(
+        Component.text(this.getPositionButtonText()),
         this::cyclePosition
     );
     this.positionDropdownButton.addId("lager-btn-position");
 
-    // ----- Header -----
     HorizontalListWidget header = new HorizontalListWidget();
     header.addId("lager-header");
 
@@ -92,10 +91,10 @@ public class LagerScreen extends SimpleActivity {
     headerText.orientation().set(FlexibleContentOrientation.VERTICAL);
     headerText.addId("lager-header-text");
 
-    ComponentWidget title = ComponentWidget.text("LAGER");
+    ComponentWidget title = ComponentWidget.component(Component.translatable("lagermod.gui.title"));
     title.addId("lager-title");
 
-    ComponentWidget subtitle = ComponentWidget.text("Inventarverwaltung");
+    ComponentWidget subtitle = ComponentWidget.component(Component.translatable("lagermod.gui.subtitle"));
     subtitle.addId("lager-subtitle");
 
     headerText.addContent(title);
@@ -105,7 +104,7 @@ public class LagerScreen extends SimpleActivity {
     headerActions.addId("lager-header-actions");
 
     TextFieldWidget searchField = new TextFieldWidget();
-    searchField.placeholder(Component.text("Suchen..."));
+    searchField.placeholder(Component.translatable("lagermod.placeholder.search"));
     searchField.addId("lager-search");
     searchField.setText(this.searchQuery);
     searchField.updateListener(query -> {
@@ -116,9 +115,10 @@ public class LagerScreen extends SimpleActivity {
     DivWidget badge = new DivWidget();
     badge.addId("lager-badge");
 
-    this.badgeText = ComponentWidget.text(
-        itemCount == 1 ? "1 Item" : itemCount + " Items"
-    );
+    Component badgeComp = itemCount == 1 
+        ? Component.translatable("lagermod.badge.single") 
+        : Component.text(itemCount + " Items");
+    this.badgeText = ComponentWidget.component(badgeComp);
     this.badgeText.addId("lager-badge-text");
     badge.addChild(this.badgeText);
 
@@ -133,43 +133,38 @@ public class LagerScreen extends SimpleActivity {
     headerLine.addId("lager-header-line");
     root.addContent(headerLine);
 
-    // ----- Formular -----
     FlexibleContentWidget form = new FlexibleContentWidget();
     form.orientation().set(FlexibleContentOrientation.VERTICAL);
     form.addId("lager-form");
 
-    ComponentWidget formTitle = ComponentWidget.text("Neuer Eintrag");
+    ComponentWidget formTitle = ComponentWidget.component(Component.translatable("lagermod.form.title"));
     formTitle.addId("lager-form-title");
     form.addContent(formTitle);
 
-    // Zeile 1: Itemname | Menge
     HorizontalListWidget formRow1 = new HorizontalListWidget();
     formRow1.addId("lager-form-row");
     formRow1.addEntry(this.formColumn(this.itemInput));
     formRow1.addEntry(this.formColumn(this.amountInput));
     form.addContent(formRow1);
 
-    // Zeile 2: Reihe | Kiste
     HorizontalListWidget formRow2 = new HorizontalListWidget();
     formRow2.addId("lager-form-row");
     formRow2.addEntry(this.formColumn(this.rowInput));
     formRow2.addEntry(this.formColumn(this.chestInput));
     form.addContent(formRow2);
 
-    // Zeile 3: Position (eigene Zeile, nicht volle Breite)
     HorizontalListWidget formRowPosition = new HorizontalListWidget();
     formRowPosition.addId("lager-form-row-position");
     formRowPosition.addEntry(this.positionDropdownButton);
     form.addContent(formRowPosition);
 
-    // Zeile 4: [Hinzufügen] [Abziehen]
     HorizontalListWidget formRowActions = new HorizontalListWidget();
     formRowActions.addId("lager-form-row-actions");
 
-    ButtonWidget addButton = ButtonWidget.text("Hinzufügen", () -> this.applyChange(true));
+    ButtonWidget addButton = ButtonWidget.component(Component.translatable("lagermod.btn.add"), () -> this.applyChange(true));
     addButton.addId("lager-btn-add");
 
-    ButtonWidget removeButton = ButtonWidget.text("Abziehen", () -> this.applyChange(false));
+    ButtonWidget removeButton = ButtonWidget.component(Component.translatable("lagermod.btn.remove"), () -> this.applyChange(false));
     removeButton.addId("lager-btn-remove");
 
     formRowActions.addEntry(addButton);
@@ -178,8 +173,7 @@ public class LagerScreen extends SimpleActivity {
 
     root.addContent(form);
 
-    // ----- Bestand -----
-    ComponentWidget listTitle = ComponentWidget.text("Bestand");
+    ComponentWidget listTitle = ComponentWidget.component(Component.translatable("lagermod.section.stock"));
     listTitle.addId("lager-section-title");
     root.addContent(listTitle);
 
@@ -191,8 +185,8 @@ public class LagerScreen extends SimpleActivity {
     this.scrollWidget.addId("lager-scroll");
     root.addFlexibleContent(this.scrollWidget);
 
-    ComponentWidget footer = ComponentWidget.text(
-        "Klicke einen Eintrag zum Auswählen  ·  /lager"
+    ComponentWidget footer = ComponentWidget.component(
+        Component.translatable("lagermod.footer.text")
     );
     footer.addId("lager-footer");
     root.addContent(footer);
@@ -206,7 +200,6 @@ public class LagerScreen extends SimpleActivity {
       return;
     }
 
-    // Escape nicht an Minecraft durchreichen (sonst öffnet sich das Pausenmenü)
     event.setCancelled(true);
 
     if (event.state() == KeyEvent.State.PRESS) {
@@ -288,10 +281,12 @@ public class LagerScreen extends SimpleActivity {
   private void populateItemList() {
     String query = this.searchQuery.toLowerCase(Locale.ROOT).trim();
 
-    List<LagerEntry> filtered = this.addon.getLagerData().getEntriesSorted().stream()
-        .filter(entry -> entry.getAmount() > 0)
-        .filter(entry -> entry.matchesSearch(query))
-        .toList();
+    List<LagerEntry> filtered = new ArrayList<>();
+    for (LagerEntry entry : this.addon.getLagerData().getEntriesSorted()) {
+      if (entry.getAmount() > 0 && entry.matchesSearch(query)) {
+        filtered.add(entry);
+      }
+    }
 
     if (filtered.isEmpty()) {
       if (this.scrollWidget != null) {
@@ -302,11 +297,11 @@ public class LagerScreen extends SimpleActivity {
       DivWidget emptyPanel = new DivWidget();
       emptyPanel.addId("lager-empty-panel");
 
-      ComponentWidget empty = ComponentWidget.text(
-          query.isEmpty()
-              ? "Noch keine Items im Lager"
-              : "Keine Treffer für \"" + this.searchQuery + "\""
-      );
+      Component emptyComp = query.isEmpty()
+          ? Component.translatable("lagermod.empty.no_items")
+          : Component.text("Keine Treffer für \"" + this.searchQuery + "\"");
+
+      ComponentWidget empty = ComponentWidget.component(emptyComp);
       empty.addId("lager-empty");
       emptyPanel.addChild(empty);
 
@@ -349,7 +344,7 @@ public class LagerScreen extends SimpleActivity {
     ComponentWidget name = ComponentWidget.text(this.formatItemName(entry.getItem()));
     name.addId("lager-item-name");
 
-    ComponentWidget location = ComponentWidget.text(entry.locationLabel());
+    ComponentWidget location = ComponentWidget.component(entry.locationLabel());
     location.addId("lager-item-location");
 
     ComponentWidget amountLabel = ComponentWidget.text(entry.getAmount() + "×");
@@ -394,6 +389,7 @@ public class LagerScreen extends SimpleActivity {
         this.addon.getLagerData().removeItem(item, amount, row, chest, position);
       }
 
+      this.addon.saveData();
       this.reload();
     } catch (NumberFormatException ignored) {
     }
@@ -403,7 +399,6 @@ public class LagerScreen extends SimpleActivity {
     if (item == null || item.isEmpty()) {
       return "";
     }
-
     return item.substring(0, 1).toUpperCase(Locale.ROOT) + item.substring(1);
   }
 }

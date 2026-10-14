@@ -1,5 +1,14 @@
 package lager;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Map;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.screen.LabyScreen;
@@ -9,30 +18,32 @@ import net.labymod.api.models.addon.annotation.AddonMain;
 @AddonMain
 public class LagerMod extends LabyAddon<LagerConfig> {
 
+  private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
   private LagerData lagerData;
   private long suppressEscapeUntilMs;
+  private File dataFile;
 
   @Override
   protected void enable() {
+    File dir = new File("config/labymod");
+    if (!dir.exists()) {
+      dir.mkdirs();
+    }
+    this.dataFile = new File(dir, "kistenlager.json");
+
     this.lagerData = new LagerData();
+    this.loadData();
 
     this.registerSettingCategory();
-
-    // Registrerar kommandot /lager
     this.registerCommand(new LagerCommand(this));
-
-    // Registrerar ChatListener för att fånga upp /lager i chatten
     this.registerListener(new LagerChatListener(this));
     this.registerListener(new LagerEscapeListener(this));
 
-    // Widget & Container Listener
     this.labyAPI().hudWidgetRegistry().register(new LagerHudWidget(this));
     this.registerListener(new LagerContainerListener(this));
 
-    // Hotkey: bei JEDEM Tastendruck UI öffnen/schließen (TOGGLE-State ignorieren,
-    // sonst braucht man nach Escape zwei Drücke, weil der interne State noch "an" ist)
     Laby.references().hotkeyService().register(
-        "kistenlagermod-open",
+        "lagermod-open",
         () -> this.configuration().enabled().get(),
         () -> this.configuration().openKey().get(),
         () -> HotkeyService.Type.TOGGLE,
@@ -43,7 +54,36 @@ public class LagerMod extends LabyAddon<LagerConfig> {
         }
     );
 
-    this.logger().info("LagerMod har laddats med framgång!");
+    this.logger().info("LagerMod erfolgreich geladen!");
+  }
+
+  public void disable() {
+    this.saveData();
+  }
+
+  public void saveData() {
+    try (FileWriter writer = new FileWriter(this.dataFile)) {
+      GSON.toJson(this.lagerData.getRawEntries(), writer);
+    } catch (IOException e) {
+      this.logger().error("Fehler beim Speichern der Lagermod-Daten", e);
+    }
+  }
+
+  public void loadData() {
+    if (!this.dataFile.exists()) {
+      return;
+    }
+    try (FileReader reader = new FileReader(this.dataFile)) {
+      Type type = new TypeToken<Map<String, LagerEntry>>() {}.getType();
+      Map<String, LagerEntry> loadedEntries = GSON.fromJson(reader, type);
+      if (loadedEntries != null) {
+        for (LagerEntry entry : loadedEntries.values()) {
+          this.lagerData.addItem(entry.getItem(), entry.getAmount(), entry.getRow(), entry.getChest(), entry.getPosition());
+        }
+      }
+    } catch (IOException e) {
+      this.logger().error("Fehler beim Laden der Lagermod-Daten", e);
+    }
   }
 
   public void openLagerScreen() {
@@ -75,7 +115,6 @@ public class LagerMod extends LabyAddon<LagerConfig> {
     return this.lagerData;
   }
 
-  /** Escape kurz unterdrücken, damit nach UI-Close kein Pausenmenü aufgeht. */
   public void suppressEscapeBriefly() {
     this.suppressEscapeUntilMs = System.currentTimeMillis() + 300L;
   }

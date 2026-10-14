@@ -29,7 +29,6 @@ public class LagerData {
     }
   }
 
-  // Überladene Methode ohne Position für Abwärtskompatibilität
   public void addItem(String item, int amount, String row, String chest) {
     this.addItem(item, amount, row, chest, "");
   }
@@ -51,7 +50,6 @@ public class LagerData {
     }
   }
 
-  // Überladene Methode ohne Position für Abwärtskompatibilität
   public void removeItem(String item, int amount, String row, String chest) {
     this.removeItem(item, amount, row, chest, "");
   }
@@ -70,7 +68,10 @@ public class LagerData {
     return list;
   }
 
-  /** Für HUD: Itemname → Gesamtmenge über alle Standorte */
+  public Map<String, LagerEntry> getRawEntries() {
+    return this.entries;
+  }
+
   public Map<String, Integer> getAllItems() {
     Map<String, Integer> totals = new LinkedHashMap<>();
     for (LagerEntry entry : this.entries.values()) {
@@ -83,6 +84,12 @@ public class LagerData {
   }
 
   public int getEntryCount() {
-    return (int) this.entries.values().stream().filter(e -> e.getAmount() > 0).count();
+    int count = 0;
+    for (LagerEntry entry : this.entries.values()) {
+      if (entry.getAmount() > 0) {
+        count++;
+      }
+    }
+    return count;
   }
 }

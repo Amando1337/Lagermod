@@ -1,0 +1,19 @@
+{
+  "lagermod.gui.title": "Kistenlager",
+  "lagermod.gui.subtitle": "Lagerverwaltung für OpSucht",
+  "lagermod.placeholder.search": "Suchen...",
+  "lagermod.badge.single": "1 Item",
+  "lagermod.form.title": "Item hinzufügen / entfernen",
+  "lagermod.placeholder.item": "Item-Name",
+  "lagermod.placeholder.amount": "Anzahl",
+  "lagermod.placeholder.row": "Reihe",
+  "lagermod.placeholder.chest": "Kiste",
+  "lagermod.btn.add": "Hinzufügen",
+  "lagermod.btn.remove": "Entfernen",
+  "lagermod.section.stock": "Lagerbestand",
+  "lagermod.footer.text": "Drücke ESC zum Schließen",
+  "lagermod.empty.no_items": "Keine Items im Lager eingetragen.",
+  "lagermod.label.location": "Reihe: %s | Kiste: %s | Pos: %s",
+  "kistenlagermod.settings.openKey.name": "Lager öffnen (Taste)",
+  "kistenlagermod.settings.openKey.description": "Taste zum Öffnen des Kistenlager-Menüs"
+}

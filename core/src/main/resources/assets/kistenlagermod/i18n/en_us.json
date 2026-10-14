@@ -1,0 +1,19 @@
+{
+  "lagermod.gui.title": "Chest Storage",
+  "lagermod.gui.subtitle": "Storage management for OpSucht",
+  "lagermod.placeholder.search": "Search...",
+  "lagermod.badge.single": "1 Item",
+  "lagermod.form.title": "Add / Remove Item",
+  "lagermod.placeholder.item": "Item name",
+  "lagermod.placeholder.amount": "Amount",
+  "lagermod.placeholder.row": "Row",
+  "lagermod.placeholder.chest": "Chest",
+  "lagermod.btn.add": "Add",
+  "lagermod.btn.remove": "Remove",
+  "lagermod.section.stock": "Stock",
+  "lagermod.footer.text": "Press ESC to close",
+  "lagermod.empty.no_items": "No items registered in storage.",
+  "lagermod.label.location": "Row: %s | Chest: %s | Pos: %s",
+  "kistenlagermod.settings.openKey.name": "Open Storage (Key)",
+  "kistenlagermod.settings.openKey.description": "Keybind to open the storage menu"
+}

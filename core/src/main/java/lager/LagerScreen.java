@@ -30,7 +30,13 @@ import net.labymod.api.event.client.input.KeyEvent;
 @Link("lager.lss")
 public class LagerScreen extends SimpleActivity {
 
-  private static final String[] POSITIONS = {"Oben", "Mitte", "Unten"};
+  // Speichert nur noch sprachunabhängige Schlüsselwerte (Guideline 6)
+  private static final String[] POSITION_VALUES = {"top", "middle", "bottom"};
+  private static final String[] POSITION_KEYS = {
+      "kistenlagermod.screen.position.top",
+      "kistenlagermod.screen.position.middle",
+      "kistenlagermod.screen.position.bottom"
+  };
 
   private final LagerMod addon;
   private boolean closing;
@@ -79,7 +85,7 @@ public class LagerScreen extends SimpleActivity {
     this.chestInput.addId("lager-field-chest");
 
     this.positionDropdownButton = ButtonWidget.component(
-        Component.text(this.getPositionButtonText()),
+        this.getPositionButtonComponent(),
         this::cyclePosition
     );
     this.positionDropdownButton.addId("lager-btn-position");
@@ -117,7 +123,7 @@ public class LagerScreen extends SimpleActivity {
 
     Component badgeComp = itemCount == 1 
         ? Component.translatable("lagermod.badge.single") 
-        : Component.text(itemCount + " Items");
+        : Component.translatable("lagermod.badge.multiple", Component.text(itemCount));
     this.badgeText = ComponentWidget.component(badgeComp);
     this.badgeText.addId("lager-badge-text");
     badge.addChild(this.badgeText);
@@ -234,22 +240,30 @@ public class LagerScreen extends SimpleActivity {
   }
 
   private void cyclePosition() {
-    this.currentPositionIndex = (this.currentPositionIndex + 1) % POSITIONS.length;
+    this.currentPositionIndex = (this.currentPositionIndex + 1) % POSITION_KEYS.length;
     this.updatePositionButtonText();
   }
 
-  private String getPositionButtonText() {
-    return "Position: " + POSITIONS[this.currentPositionIndex] + "  ▼";
+  private Component getPositionButtonComponent() {
+    // Verwendet Übersetzungen statt "Position: Oben ▼"
+    return Component.translatable("kistenlagermod.screen.position.label", 
+        Component.translatable(POSITION_KEYS[this.currentPositionIndex]));
   }
 
   private void updatePositionButtonText() {
-    this.positionDropdownButton.updateComponent(Component.text(this.getPositionButtonText()));
+    this.positionDropdownButton.updateComponent(this.getPositionButtonComponent());
   }
 
   private void setPositionByName(String posName) {
     if (posName == null) return;
-    for (int i = 0; i < POSITIONS.length; i++) {
-      if (POSITIONS[i].equalsIgnoreCase(posName.trim())) {
+    String cleanPos = posName.trim().toLowerCase(Locale.ROOT);
+    
+    // Prüft sowohl gespeicherte Schlüsselwörter als auch frühere deutsche Werte
+    for (int i = 0; i < POSITION_VALUES.length; i++) {
+      if (POSITION_VALUES[i].equalsIgnoreCase(cleanPos) 
+          || (i == 0 && cleanPos.contains("oben"))
+          || (i == 1 && cleanPos.contains("mitte"))
+          || (i == 2 && cleanPos.contains("unten"))) {
         this.currentPositionIndex = i;
         this.updatePositionButtonText();
         break;
@@ -297,9 +311,10 @@ public class LagerScreen extends SimpleActivity {
       DivWidget emptyPanel = new DivWidget();
       emptyPanel.addId("lager-empty-panel");
 
+      // Verwendet Component.translatable statt hart codiertem "Keine Treffer für..." (Review Point 1)
       Component emptyComp = query.isEmpty()
           ? Component.translatable("lagermod.empty.no_items")
-          : Component.text("Keine Treffer für \"" + this.searchQuery + "\"");
+          : Component.translatable("kistenlagermod.screen.search.not_found", Component.text(this.searchQuery));
 
       ComponentWidget empty = ComponentWidget.component(emptyComp);
       empty.addId("lager-empty");
@@ -371,7 +386,7 @@ public class LagerScreen extends SimpleActivity {
     String amountStr = this.amountInput.getText().trim();
     String row = this.rowInput.getText();
     String chest = this.chestInput.getText();
-    String position = POSITIONS[this.currentPositionIndex];
+    String position = POSITION_VALUES[this.currentPositionIndex]; // Nutzt sprachunabhängigen ID-Wert
 
     if (LagerEntry.normalizeKey(item).isEmpty() || amountStr.isEmpty()) {
       return;
@@ -389,7 +404,8 @@ public class LagerScreen extends SimpleActivity {
         this.addon.getLagerData().removeItem(item, amount, row, chest, position);
       }
 
-      this.addon.saveData();
+      // Speichert asynchron im Hintergrund, um Lagging im Render-Thread zu verhindern (Review Point 3)
+      this.addon.saveDataAsync();
       this.reload();
     } catch (NumberFormatException ignored) {
     }

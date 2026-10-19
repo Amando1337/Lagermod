@@ -8,7 +8,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.screen.LabyScreen;
@@ -19,6 +22,10 @@ import net.labymod.api.models.addon.annotation.AddonMain;
 public class LagerMod extends LabyAddon<LagerConfig> {
 
   private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+  
+  // Single-Thread Executor für asynchrone Datei-I/O (Review Guideline 1)
+  private final ExecutorService ioExecutor = Executors.newSingleThreadExecutor();
+  
   private LagerData lagerData;
   private long suppressEscapeUntilMs;
   private File dataFile;
@@ -32,7 +39,9 @@ public class LagerMod extends LabyAddon<LagerConfig> {
     this.dataFile = new File(dir, "kistenlager.json");
 
     this.lagerData = new LagerData();
-    this.loadData();
+    
+    // Laden asynchron auf dem I/O Executor ausführen
+    this.ioExecutor.execute(this::loadData);
 
     this.registerSettingCategory();
     this.registerCommand(new LagerCommand(this));
@@ -58,12 +67,29 @@ public class LagerMod extends LabyAddon<LagerConfig> {
   }
 
   public void disable() {
-    this.saveData();
+    this.saveDataSync();
+    this.ioExecutor.shutdown();
   }
 
-  public void saveData() {
+  /**
+   * Asynchrones Speichern für GUI-/Render-Aktionen (verhindert Lagging)
+   */
+  public void saveDataAsync() {
+    Map<String, LagerEntry> copy = new HashMap<>(this.lagerData.getRawEntries());
+    this.ioExecutor.execute(() -> this.writeEntriesToFile(copy));
+  }
+
+  /**
+   * Synchrones Speichern beim Herunterfahren
+   */
+  public void saveDataSync() {
+    Map<String, LagerEntry> copy = new HashMap<>(this.lagerData.getRawEntries());
+    this.writeEntriesToFile(copy);
+  }
+
+  private void writeEntriesToFile(Map<String, LagerEntry> entriesToSave) {
     try (FileWriter writer = new FileWriter(this.dataFile)) {
-      GSON.toJson(this.lagerData.getRawEntries(), writer);
+      GSON.toJson(entriesToSave, writer);
     } catch (IOException e) {
       this.logger().error("Fehler beim Speichern der Lagermod-Daten", e);
     }

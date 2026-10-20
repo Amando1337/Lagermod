@@ -63,7 +63,17 @@ public class LagerEntry {
   }
 
   public Component locationLabel() {
-    String pos = this.position.isEmpty() ? "-" : this.position;
-    return Component.translatable("lagermod.label.location", Component.text(this.row), Component.text(this.chest), Component.text(pos));
+    String posKey = switch (this.position.toLowerCase(Locale.ROOT)) {
+      case "top" -> "kistenlagermod.screen.position.top";
+      case "middle" -> "kistenlagermod.screen.position.middle";
+      case "bottom" -> "kistenlagermod.screen.position.bottom";
+      default -> null;
+    };
+
+    Component posComponent = posKey != null 
+        ? Component.translatable(posKey) 
+        : Component.text(this.position.isEmpty() ? "-" : this.position);
+
+    return Component.translatable("lagermod.label.location", Component.text(this.row), Component.text(this.chest), posComponent);
   }
 }
